@@ -21,11 +21,11 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     @IBAction func valueChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
-            remove(asChildViewController: eventsViewController)
-            add(asChildViewController: citiesViewController)
+            remove(childViewController: eventsViewController)
+            addView(fromViewController: citiesViewController)
         case 1:
-            remove(asChildViewController: citiesViewController)
-            add(asChildViewController: eventsViewController)
+            remove(childViewController: citiesViewController)
+            addView(fromViewController: eventsViewController)
             if needReloadEventsList {
                 eventsViewController.tableView.reloadData()
                 needReloadEventsList = false
@@ -40,18 +40,18 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
         citiesViewController.delegate = self
         addChild(citiesViewController)
         addChild(eventsViewController)
-        add(asChildViewController: citiesViewController)
+        addView(fromViewController: citiesViewController)
         segmentedControl.setEnabled(false, forSegmentAt: 1)
         fetchCities()
     }
     
-    func add(asChildViewController viewController: UIViewController) {
+    func addView(fromViewController viewController: UIViewController) {
         containerView.addSubview(viewController.view)
         viewController.didMove(toParent: self)
         setConstraints(forChildViewController: viewController)
     }
     
-    func remove(asChildViewController viewController: UIViewController) {
+    func remove(childViewController viewController: UIViewController) {
         viewController.willMove(toParent: nil)
         viewController.view.removeFromSuperview()
         viewController.removeFromParent()
