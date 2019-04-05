@@ -66,7 +66,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     }
     
     func fetchCities() {
-        let networkRequiest = NetworkRequest()
+        let networkRequest = NetworkRequest()
         networkRequest.getCities { [weak self] (result) in
             switch result {
             case .success(let cities):
