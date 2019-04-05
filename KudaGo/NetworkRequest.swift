@@ -21,6 +21,14 @@ class NetworkRequest {
         }
     }
     
+    func cancelRequests() {
+        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler { (dataTasks, uploadTasks, downloadTasks) in
+            dataTasks.forEach { $0.cancel() }
+            uploadTasks.forEach { $0.cancel() }
+            uploadTasks.forEach { $0.cancel() }
+        }
+    }
+    
     func deserialization<T: Decodable>(with type: T.Type,
                                          forward completion: @escaping (Result<T>) -> Void) -> (Result<Data>) -> Void {
         return { result in
