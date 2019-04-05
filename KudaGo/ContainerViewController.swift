@@ -66,8 +66,8 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     }
     
     func fetchCities() {
-        let networkRequiest = NetworkRequiest()
-        networkRequiest.getCities { [weak self] (result) in
+        let networkRequiest = NetworkRequest()
+        networkRequest.getCities { [weak self] (result) in
             switch result {
             case .success(let cities):
                 debugPrint(cities)
@@ -80,8 +80,8 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     }
     
     func fetchEvents(location: String) {
-        let networkRequiest = NetworkRequiest()
-        networkRequiest.getEvents(location: location) { [weak self] (result) in
+        let networkRequest = NetworkRequest()
+        networkRequest.getEvents(location: location) { [weak self] (result) in
             switch result {
             case .success(let events):
                 debugPrint(events.results)
