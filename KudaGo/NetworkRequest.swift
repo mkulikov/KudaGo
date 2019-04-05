@@ -14,9 +14,12 @@ class NetworkRequest {
     private let citiesUrl = "https://kudago.com/public-api/v1.4/locations"
     private let eventsUrl = "https://kudago.com/public-api/v1.4/events"
     
-    func request(url: String, parameters: Parameters? = nil, completion: @escaping (Result<Data>) -> Void) {
-        guard let url = URL(string: url) else { return }
-        Alamofire.SessionManager.default.request(url, method: .get, parameters: parameters).validate().responseData { (response) in
+    var eventsRequest: DataRequest?
+    var citiesRequest: DataRequest?
+    
+    func getRequest(url: String, parameters: Parameters? = nil, completion: @escaping (Result<Data>) -> Void) -> DataRequest? {
+        guard let url = URL(string: url) else { return nil }
+        return Alamofire.SessionManager.default.request(url, method: .get, parameters: parameters).validate().responseData { (response) in
             completion(response.result)
         }
     }
@@ -40,12 +43,20 @@ class NetworkRequest {
     }
     
     func getCities(completion: @escaping (Result<[City]>) -> Void) {
-        request(url: citiesUrl, completion: deserialization(with: [City].self, forward: completion))
+        citiesRequest = getRequest(url: citiesUrl, completion: deserialization(with: [City].self, forward: completion))
     }
     
     func getEvents(location: String, completion: @escaping (Result<EventsResponse>) -> Void) {
         let parameters: Parameters = ["location": location, "page_size": 10]
-        request(url: eventsUrl, parameters: parameters, completion: deserialization(with: EventsResponse.self, forward: completion))
+        eventsRequest = getRequest(url: eventsUrl, parameters: parameters, completion: deserialization(with: EventsResponse.self, forward: completion))
+    }
+    
+    func cancelEventsRequest() {
+        eventsRequest?.cancel()
+    }
+    
+    func cancelCitiesRequest() {
+        citiesRequest?.cancel()
     }
 
 }
