@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol CitiesViewControllerDelegate {
+protocol CitiesViewControllerDelegate: class {
     func citiesList(didSelectAt index: Int)
 }
 
@@ -18,7 +18,7 @@ class CitiesViewController: UIViewController, UITableViewDataSource, UITableView
     
     var cities = [City]()
     
-    var delegate: CitiesViewControllerDelegate?
+    weak var delegate: CitiesViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
