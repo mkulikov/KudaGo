@@ -81,7 +81,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     
     func fetchEvents(location: String) {
         let networkRequest = NetworkRequest()
-        networkRequest.cancelRequests()
+        networkRequest.cancelEventsRequest()
         networkRequest.getEvents(location: location) { [weak self] (result) in
             switch result {
             case .success(let events):
