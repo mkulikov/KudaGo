@@ -18,6 +18,8 @@
 		BE57F1C022524FDE00ECB9E8 /* EventCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE57F1BE22524FDE00ECB9E8 /* EventCell.xib */; };
 		BE57F1C32252646E00ECB9E8 /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE57F1C12252646E00ECB9E8 /* ContainerViewController.swift */; };
 		BE57F1C42252646E00ECB9E8 /* ContainerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE57F1C22252646E00ECB9E8 /* ContainerViewController.xib */; };
+		BEFC7D11225C7FF200D71E1B /* LoadingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFC7D0F225C7FF200D71E1B /* LoadingCell.swift */; };
+		BEFC7D12225C7FF200D71E1B /* LoadingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BEFC7D10225C7FF200D71E1B /* LoadingCell.xib */; };
 		BEFEC7F0224BB69000253D55 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFEC7EF224BB69000253D55 /* AppDelegate.swift */; };
 		BEFEC7F7224BB69100253D55 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BEFEC7F6224BB69100253D55 /* Assets.xcassets */; };
 		BEFEC7FA224BB69100253D55 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BEFEC7F8224BB69100253D55 /* LaunchScreen.storyboard */; };
@@ -40,6 +42,8 @@
 		BE57F1BE22524FDE00ECB9E8 /* EventCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EventCell.xib; sourceTree = "<group>"; };
 		BE57F1C12252646E00ECB9E8 /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
 		BE57F1C22252646E00ECB9E8 /* ContainerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ContainerViewController.xib; sourceTree = "<group>"; };
+		BEFC7D0F225C7FF200D71E1B /* LoadingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCell.swift; sourceTree = "<group>"; };
+		BEFC7D10225C7FF200D71E1B /* LoadingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LoadingCell.xib; sourceTree = "<group>"; };
 		BEFEC7EC224BB69000253D55 /* KudaGo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KudaGo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEFEC7EF224BB69000253D55 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BEFEC7F6224BB69100253D55 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -108,6 +112,8 @@
 				BE57F1BA225234EC00ECB9E8 /* EventsViewController.xib */,
 				BE57F1BD22524FDE00ECB9E8 /* EventCell.swift */,
 				BE57F1BE22524FDE00ECB9E8 /* EventCell.xib */,
+				BEFC7D0F225C7FF200D71E1B /* LoadingCell.swift */,
+				BEFC7D10225C7FF200D71E1B /* LoadingCell.xib */,
 			);
 			path = KudaGo;
 			sourceTree = "<group>";
@@ -187,6 +193,7 @@
 				24418B6C22511A8A00F4C1AE /* CitiesViewController.xib in Resources */,
 				BE57F1C42252646E00ECB9E8 /* ContainerViewController.xib in Resources */,
 				BEFEC7F7224BB69100253D55 /* Assets.xcassets in Resources */,
+				BEFC7D12225C7FF200D71E1B /* LoadingCell.xib in Resources */,
 				BE57F1C022524FDE00ECB9E8 /* EventCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -249,6 +256,7 @@
 				BE57F1BF22524FDE00ECB9E8 /* EventCell.swift in Sources */,
 				BE57F1BB225234EC00ECB9E8 /* EventsViewController.swift in Sources */,
 				BEFEC7F0224BB69000253D55 /* AppDelegate.swift in Sources */,
+				BEFC7D11225C7FF200D71E1B /* LoadingCell.swift in Sources */,
 				24418B6B22511A8A00F4C1AE /* CitiesViewController.swift in Sources */,
 				BE57F1B2224CF9C000ECB9E8 /* EventsResponse.swift in Sources */,
 				BE57F1B8225220DB00ECB9E8 /* CityCell.swift in Sources */,

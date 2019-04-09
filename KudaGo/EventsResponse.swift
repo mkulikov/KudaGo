@@ -10,6 +10,7 @@ import Foundation
 
 struct EventsResponse: Decodable {
     let results: [Event]
+    let count: Int?
 }
 
 struct Event: Decodable {

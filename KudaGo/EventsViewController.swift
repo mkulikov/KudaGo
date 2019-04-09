@@ -8,11 +8,20 @@
 
 import UIKit
 
+protocol EventsViewControllerDelegate: class {
+    func eventsListWillUpdate()
+}
+
 class EventsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
+    weak var delegate: EventsViewControllerDelegate?
+    
     var events = [Event]()
+    var pageSize = 20
+    var currentPage = 0
+    var count = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,6 +38,16 @@ class EventsViewController: UIViewController, UITableViewDataSource, UITableView
         let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as! EventCell
         cell.label.text = events[indexPath.row].title
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row == events.count - 1 && currentPage < pageCount() {
+            delegate?.eventsListWillUpdate()
+        }
+    }
+
+    private func pageCount() -> Int {
+        return Int(ceil(Double(count) / Double(pageSize)))
     }
 
 }

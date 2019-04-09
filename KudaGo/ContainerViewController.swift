@@ -8,10 +8,11 @@
 
 import UIKit
 
-class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
+class ContainerViewController: UIViewController, CitiesViewControllerDelegate, EventsViewControllerDelegate {
     
     var location: String?
     var needReloadEventsList = true
+    var isFetchEventsInProgress = false
     
     let citiesViewController = CitiesViewController()
     let eventsViewController = EventsViewController()
@@ -38,6 +39,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         citiesViewController.delegate = self
+        eventsViewController.delegate = self
         addChild(citiesViewController)
         addChild(eventsViewController)
         addView(fromViewController: citiesViewController)
@@ -80,16 +82,42 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     }
     
     func fetchEvents(location: String) {
+
+        isFetchEventsInProgress = true
+        eventsViewController.currentPage += 1
+        
         let networkRequest = NetworkRequest()
         networkRequest.cancelEventsRequest()
-        networkRequest.getEvents(location: location) { [weak self] (result) in
+        
+        networkRequest.getEvents(location: location, page: eventsViewController.currentPage, pageSize: eventsViewController.pageSize) { [weak self] (result) in
             switch result {
             case .success(let events):
                 debugPrint(events.results)
-                self?.eventsViewController.events = events.results
-                self?.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                
+                
+                //add condition "if self?.eventsViewController.count == 0"
+                self?.eventsViewController.count = events.count ?? 0
+                
+                self?.eventsViewController.events.append(contentsOf: events.results)
+                
+                //condition if current page is "cities", can replaced by "if self?.eventsViewController.currentPage == 1"
+                if self?.segmentedControl.selectedSegmentIndex == 0 {
+                    self?.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                }
+                
+                //condition if events list will update, can be raplaced "self?.eventsViewController.count != 1", force unwrap
+                if (self?.eventsViewController.currentPage)! > 1 {
+                    self?.eventsViewController.tableView.reloadData()
+                }
+                
+                self?.isFetchEventsInProgress = false
+                
             case .failure(let error):
                 print(error)
+                
+                //if failure happened
+                self?.isFetchEventsInProgress = false
+                self?.eventsViewController.currentPage -= 1
             }
         }
     }
@@ -99,9 +127,17 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
         if location != self.location {
             self.location = location
             needReloadEventsList = true
+            eventsViewController.events = []
             segmentedControl.setEnabled(false, forSegmentAt: 1)
             fetchEvents(location: location)
         }
     }
+    
+    func eventsListWillUpdate() {
+        if isFetchEventsInProgress { return }
+        guard let location = self.location else { return }
+        fetchEvents(location: location)
+    }
+
 
 }
