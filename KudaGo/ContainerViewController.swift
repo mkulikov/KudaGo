@@ -93,35 +93,27 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
     func fetchEvents(location: String) {
 
         isFetchEventsInProgress = true
-        eventsViewController.currentPage += 1
+        
         
         let networkRequest = NetworkRequest()
         networkRequest.cancelEventsRequest()
         
-        networkRequest.getEvents(location: location, page: eventsViewController.currentPage, pageSize: eventsViewController.pageSize) { [weak self] (result) in
+        networkRequest.getEvents(location: location, page: eventsViewController.nextPage, pageSize: eventsViewController.pageSize) { [weak self] (result) in
             switch result {
             case .success(let events):
                 debugPrint(events.results)
-                
-                //add condition "if self?.eventsViewController.count == 0"
                 self?.eventsViewController.count = events.count ?? 0
                 self?.eventsViewController.events.append(contentsOf: events.results)
-                
-                //condition can replaced by "if self?.eventsViewController.currentPage == 1" or "if self?.segmentedControl.selectedSegmentIndex == 0"
                 if self?.currentView == .cities {
                     self?.segmentedControl.setEnabled(true, forSegmentAt: 1)
-                } else { //condition if events list will update, can be raplaced "self?.eventsViewController.count != 1" or "(self?.eventsViewController.currentPage)! > 1"
+                } else {
                     self?.eventsViewController.tableView.reloadData()
                 }
-                
+                self?.eventsViewController.nextPage += 1
                 self?.isFetchEventsInProgress = false
-                
             case .failure(let error):
                 print(error)
-                
-                //if failure happened
                 self?.isFetchEventsInProgress = false
-                self?.eventsViewController.currentPage -= 1
             }
         }
     }

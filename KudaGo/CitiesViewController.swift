@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol CitiesViewControllerDelegate: class {
+protocol CitiesViewControllerDelegate: AnyObject {
     func citiesList(didSelectAt index: Int)
 }
 

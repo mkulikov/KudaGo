@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol EventsViewControllerDelegate: class {
+protocol EventsViewControllerDelegate: AnyObject {
     func eventsListWillUpdate()
 }
 
@@ -20,7 +20,7 @@ class EventsViewController: UIViewController, UITableViewDataSource, UITableView
     
     var events = [Event]()
     var pageSize = 20
-    var currentPage = 0
+    var nextPage = 1
     var count = 0
     
     override func viewDidLoad() {
@@ -41,7 +41,7 @@ class EventsViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == events.count - 1 && currentPage < pageCount() {
+        if indexPath.row == events.count - 1 && nextPage <= pageCount() {
             delegate?.eventsListWillUpdate()
         }
     }
