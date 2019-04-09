@@ -14,6 +14,13 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
     var needReloadEventsList = true
     var isFetchEventsInProgress = false
     
+    enum View {
+        case cities
+        case events
+    }
+    
+    var currentView = View.cities
+    
     let citiesViewController = CitiesViewController()
     let eventsViewController = EventsViewController()
 
@@ -24,6 +31,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
         case 0:
             remove(childViewController: eventsViewController)
             addView(fromViewController: citiesViewController)
+            currentView = .cities
         case 1:
             remove(childViewController: citiesViewController)
             addView(fromViewController: eventsViewController)
@@ -31,6 +39,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
                 eventsViewController.tableView.reloadData()
                 needReloadEventsList = false
             }
+            currentView = .events
         default:
             break
         }
@@ -94,19 +103,14 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
             case .success(let events):
                 debugPrint(events.results)
                 
-                
                 //add condition "if self?.eventsViewController.count == 0"
                 self?.eventsViewController.count = events.count ?? 0
-                
                 self?.eventsViewController.events.append(contentsOf: events.results)
                 
-                //condition if current page is "cities", can replaced by "if self?.eventsViewController.currentPage == 1"
-                if self?.segmentedControl.selectedSegmentIndex == 0 {
+                //condition can replaced by "if self?.eventsViewController.currentPage == 1" or "if self?.segmentedControl.selectedSegmentIndex == 0"
+                if self?.currentView == .cities {
                     self?.segmentedControl.setEnabled(true, forSegmentAt: 1)
-                }
-                
-                //condition if events list will update, can be raplaced "self?.eventsViewController.count != 1", force unwrap
-                if (self?.eventsViewController.currentPage)! > 1 {
+                } else { //condition if events list will update, can be raplaced "self?.eventsViewController.count != 1" or "(self?.eventsViewController.currentPage)! > 1"
                     self?.eventsViewController.tableView.reloadData()
                 }
                 
