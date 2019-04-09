@@ -12,8 +12,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
     
     var location: String?
     var needReloadEventsList = true
-    var isFetchEventsInProgress = false
-    
+
     enum View {
         case cities
         case events
@@ -91,29 +90,27 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
     }
     
     func fetchEvents(location: String) {
-
-        isFetchEventsInProgress = true
-        
-        
         let networkRequest = NetworkRequest()
         networkRequest.cancelEventsRequest()
-        
         networkRequest.getEvents(location: location, page: eventsViewController.nextPage, pageSize: eventsViewController.pageSize) { [weak self] (result) in
             switch result {
             case .success(let events):
                 debugPrint(events.results)
                 self?.eventsViewController.count = events.count ?? 0
                 self?.eventsViewController.events.append(contentsOf: events.results)
+                self?.eventsViewController.nextPage += 1
+                self?.eventsViewController.isFetchEventsInProgress = false
                 if self?.currentView == .cities {
                     self?.segmentedControl.setEnabled(true, forSegmentAt: 1)
                 } else {
                     self?.eventsViewController.tableView.reloadData()
                 }
-                self?.eventsViewController.nextPage += 1
-                self?.isFetchEventsInProgress = false
             case .failure(let error):
                 print(error)
-                self?.isFetchEventsInProgress = false
+                self?.eventsViewController.isFetchEventsInProgress = false
+                if self?.currentView == .events {
+                    self?.eventsViewController.tableView.reloadData()
+                }
             }
         }
     }
@@ -124,16 +121,17 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
             self.location = location
             needReloadEventsList = true
             eventsViewController.events = []
+            eventsViewController.nextPage = 1
             segmentedControl.setEnabled(false, forSegmentAt: 1)
             fetchEvents(location: location)
         }
     }
     
     func eventsListWillUpdate() {
-        if isFetchEventsInProgress { return }
         guard let location = self.location else { return }
+        eventsViewController.isFetchEventsInProgress = true
+        eventsViewController.tableView.reloadData()
         fetchEvents(location: location)
     }
-
 
 }

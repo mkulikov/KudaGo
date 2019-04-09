@@ -19,6 +19,7 @@ class EventsViewController: UIViewController, UITableViewDataSource, UITableView
     weak var delegate: EventsViewControllerDelegate?
     
     var events = [Event]()
+    var isFetchEventsInProgress = false
     var pageSize = 20
     var nextPage = 1
     var count = 0
@@ -26,22 +27,39 @@ class EventsViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(UINib(nibName: "EventCell", bundle: nil), forCellReuseIdentifier: "EventCell")
+        tableView.register(UINib(nibName: "LoadingCell", bundle: nil), forCellReuseIdentifier: "LoadingCell")
         tableView.dataSource = self
         tableView.delegate = self
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return events.count
+        if section == 0 {
+            return events.count
+        } else if section == 1 && isFetchEventsInProgress {
+            return 1
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as! EventCell
-        cell.label.text = events[indexPath.row].title
-        return cell
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "EventCell", for: indexPath) as! EventCell
+            cell.label.text = events[indexPath.row].title
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "LoadingCell", for: indexPath) as! LoadingCell
+            cell.activityIndicator.startAnimating()
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row == events.count - 1 && nextPage <= pageCount() {
+        if isFetchEventsInProgress || nextPage > pageCount() { return }
+        if indexPath.row == events.count - 1 {
             delegate?.eventsListWillUpdate()
         }
     }
