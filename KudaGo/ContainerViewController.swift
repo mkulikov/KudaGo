@@ -25,6 +25,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
 
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
+    
     @IBAction func valueChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
@@ -36,6 +37,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
             addView(fromViewController: eventsViewController)
             if needReloadEventsList {
                 eventsViewController.tableView.reloadData()
+                eventsViewController.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .none, animated: false)
                 needReloadEventsList = false
             }
             currentView = .events
@@ -130,7 +132,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate, E
     func eventsListWillUpdate() {
         guard let location = self.location else { return }
         eventsViewController.isFetchEventsInProgress = true
-        eventsViewController.tableView.reloadData()
+        eventsViewController.tableView.reloadSections(IndexSet(integer: 1), with: .none)
         fetchEvents(location: location)
     }
 

@@ -39,10 +39,9 @@ class EventsViewController: UIViewController, UITableViewDataSource, UITableView
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return events.count
-        } else if section == 1 && isFetchEventsInProgress {
+        } else {
             return 1
         }
-        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -55,6 +54,13 @@ class EventsViewController: UIViewController, UITableViewDataSource, UITableView
             cell.activityIndicator.startAnimating()
             return cell
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.section == 1 && !isFetchEventsInProgress {
+            return 0.0
+        }
+        return UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
