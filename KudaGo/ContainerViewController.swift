@@ -8,28 +8,39 @@
 
 import UIKit
 
-class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
+class ContainerViewController: UIViewController, CitiesViewControllerDelegate, EventsViewControllerDelegate {
     
     var location: String?
     var needReloadEventsList = true
+
+    enum View {
+        case cities
+        case events
+    }
+    
+    var currentView = View.cities
     
     let citiesViewController = CitiesViewController()
     let eventsViewController = EventsViewController()
 
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
+    
     @IBAction func valueChanged(_ sender: UISegmentedControl) {
         switch sender.selectedSegmentIndex {
         case 0:
             remove(childViewController: eventsViewController)
             addView(fromViewController: citiesViewController)
+            currentView = .cities
         case 1:
             remove(childViewController: citiesViewController)
             addView(fromViewController: eventsViewController)
             if needReloadEventsList {
                 eventsViewController.tableView.reloadData()
+                eventsViewController.tableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .none, animated: false)
                 needReloadEventsList = false
             }
+            currentView = .events
         default:
             break
         }
@@ -38,6 +49,7 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         citiesViewController.delegate = self
+        eventsViewController.delegate = self
         addChild(citiesViewController)
         addChild(eventsViewController)
         addView(fromViewController: citiesViewController)
@@ -82,14 +94,25 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
     func fetchEvents(location: String) {
         let networkRequest = NetworkRequest()
         networkRequest.cancelEventsRequest()
-        networkRequest.getEvents(location: location) { [weak self] (result) in
+        networkRequest.getEvents(location: location, page: eventsViewController.nextPage, pageSize: eventsViewController.pageSize) { [weak self] (result) in
             switch result {
             case .success(let events):
                 debugPrint(events.results)
-                self?.eventsViewController.events = events.results
-                self?.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                self?.eventsViewController.count = events.count ?? 0
+                self?.eventsViewController.events.append(contentsOf: events.results)
+                self?.eventsViewController.nextPage += 1
+                self?.eventsViewController.isFetchEventsInProgress = false
+                if self?.currentView == .cities {
+                    self?.segmentedControl.setEnabled(true, forSegmentAt: 1)
+                } else {
+                    self?.eventsViewController.tableView.reloadData()
+                }
             case .failure(let error):
                 print(error)
+                self?.eventsViewController.isFetchEventsInProgress = false
+                if self?.currentView == .events {
+                    self?.eventsViewController.tableView.reloadData()
+                }
             }
         }
     }
@@ -99,9 +122,18 @@ class ContainerViewController: UIViewController, CitiesViewControllerDelegate {
         if location != self.location {
             self.location = location
             needReloadEventsList = true
+            eventsViewController.events = []
+            eventsViewController.nextPage = 1
             segmentedControl.setEnabled(false, forSegmentAt: 1)
             fetchEvents(location: location)
         }
+    }
+    
+    func eventsListWillUpdate() {
+        guard let location = self.location else { return }
+        eventsViewController.isFetchEventsInProgress = true
+        eventsViewController.tableView.reloadSections(IndexSet(integer: 1), with: .none)
+        fetchEvents(location: location)
     }
 
 }

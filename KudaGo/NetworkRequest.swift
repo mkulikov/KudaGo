@@ -46,8 +46,8 @@ class NetworkRequest {
         citiesRequest = getRequest(url: citiesUrl, completion: deserialization(with: [City].self, forward: completion))
     }
     
-    func getEvents(location: String, completion: @escaping (Result<EventsResponse>) -> Void) {
-        let parameters: Parameters = ["location": location, "page_size": 10]
+    func getEvents(location: String, page: Int, pageSize: Int, completion: @escaping (Result<EventsResponse>) -> Void) {
+        let parameters: Parameters = ["location": location, "page_size": pageSize, "page": page]
         eventsRequest = getRequest(url: eventsUrl, parameters: parameters, completion: deserialization(with: EventsResponse.self, forward: completion))
     }
     
